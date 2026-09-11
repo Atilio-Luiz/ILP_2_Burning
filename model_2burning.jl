@@ -9,12 +9,13 @@ Variáveis:
   f[t]    -> 1 se o processo termina exatamente no instante t
   z       -> instante final (valor objetivo)
 
-Requer: JuMP, CPLEX, Graphs (todos instaláveis via Pkg).
+Requer: JuMP, HiGHS, Graphs (todos instaláveis via Pkg).
 """
 
 using JuMP
-using CPLEX
 using Graphs
+using HiGHS
+
 
 # ---------------------------------------------------------------------
 # Construção do modelo
@@ -32,7 +33,7 @@ Retorna o `Model` do JuMP pronto para ser otimizado.
 function build_2burning_model(g::AbstractGraph, T::Int; silent::Bool=false)
     V = collect(vertices(g))
 
-    model = Model(CPLEX.Optimizer)
+    model = Model(HiGHS.Optimizer)
     silent && set_silent(model)
 
     d(v) = degree(g, v)
@@ -117,13 +118,12 @@ end
 # ---------------------------------------------------------------------
 # Exemplo de uso
 # ---------------------------------------------------------------------
-#=
-function example()
-    # Grafo de exemplo: caminho P5 (troque por sua leitura via graph6)
+function executa_exemplo()
+    # Grafo de exemplo: caminho P5
     g = path_graph(5)
 
     n = nv(g)
-    T = n  # limitante superior simples; pode ser refinado (ex.: baseado no diâmetro)
+    T = n  # limitante superior simples; pode ser refinado. 
 
     model = build_2burning_model(g, T; silent = true)
     optimize!(model)
@@ -136,10 +136,7 @@ function example()
         println("Número de 2-queima (b2): ", b2)
         println("Sequência de fontes (t, v): ", sources)
     end
-
-    return model
 end
 
-# Descomente para rodar o exemplo diretamente:
-example()
-=#
+# Chamando a função principal
+executa_exemplo()
