@@ -1,0 +1,2 @@
+graph,greedy_burning_number,pli_burning_number,time,#sources,status
+p5,4,4,0.01,4,OPTIMAL
